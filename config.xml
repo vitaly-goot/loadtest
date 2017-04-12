@@ -1,0 +1,84 @@
+<storage>
+<load_test name="couch/upload.py" debug='0' postproc="lib/reduce.py"  config="conf/task_8110.json">
+    <shell command="ssh"/>     
+    <user name="root"/>     
+    <arg name="dbname" value="testdb" />
+    <arg name="ndocs" value="10000000" />
+    <arg name="nrevs" value="6" />
+    <arg name="interval" value="300" />
+    <arg name="workers" value="140" />
+    <arg name="folder" value="1000%2Fvgoot%2F2%2F" />
+    <arg name="order" value="rand" />
+    <!--
+    <arg name="shard_range" value="70000000-77ffffff" />
+    <arg name="shard_range" value="f8000000-ffffffff" />
+    <arg name="shard_range" value="28000000-2fffffff" />
+    -->
+</load_test>
+<load_test name="couch/download.py" debug='0' postproc="lib/reduce.py" config="conf/task_8110.json">
+    <shell command="ssh"/>     
+    <user name="root"/>     
+    <arg name="dbname" value="testdb" />
+    <arg name="ndocs" value="10000" />
+    <arg name="nrevs" value="1" />
+    <arg name="interval" value="10" />
+    <arg name="workers" value="3" />
+    <arg name="folder" value="1000%2Fvgoot%2F2%2F" />
+    <arg name="order" value="rand" />
+</load_test>
+<load_test name="couch/all_docs.py" debug='0' postproc="lib/reduce.py" config="conf/task_8110.json">
+    <shell command="ssh"/>     
+    <user name="root"/>     
+    <arg name="dbname" value="testdb" />
+    <arg name="ndocs" value="10000000" />
+    <arg name="nrevs" value="1" />
+    <arg name="interval" value="300" />
+    <arg name="workers" value="1" />
+    <arg name="folder" value="1000%2Fvgoot%2F2%2F" />
+    <arg name="order" value="rand" />
+</load_test>
+<load_test name="couch/dirview.py" debug='0' postproc="lib/reduce.py" config="conf/task_8110.json">
+    <shell command="ssh"/>     
+    <user name="root"/>     
+    <arg name="dbname" value="testdb" />
+    <arg name="ndocs" value="10000000" />
+    <arg name="nrevs" value="1" />
+    <arg name="interval" value="300" />
+    <arg name="workers" value="2" />
+    <arg name="folder" value="1000%2Fvgoot%2F2%2F" />
+    <arg name="order" value="rand" />
+</load_test>
+<load_test name="cobra/mkdir.py" debug='0' postproc="lib/reduce.py" config="conf/task_8110.json">
+    <shell command="ssh"/>     
+    <user name="root"/>     
+    <arg name="dbname" value="db8110" />
+    <arg name="ndocs" value="400" />
+    <arg name="nrevs" value="1" />
+    <arg name="interval" value="10" />
+    <arg name="workers" value="8" />
+    <arg name="folder" value="1266/vgoot/57/01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678900123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789/" />
+    <arg name="order" value="rand" />
+</load_test>
+<load_test name="couch/admin.py" debug='0' postproc="lib/reduce.py" config="conf/task_8110.json">
+    <shell command="ssh"/>     
+    <user name="root"/>     
+    <arg name="dbname" value="testdb" />
+    <arg name="ndocs" value="2000000" />
+    <arg name="nrevs" value="1" />
+    <arg name="interval" value="10" />
+    <arg name="workers" value="1" />
+    <arg name="folder" value="" />
+    <arg name="order" value="rand" />
+</load_test>
+<load_test name="prod" main="couch/admin.py" debug='0' postproc="lib/reduce.py" config="conf/r21628.json">
+    <shell command="gwsh"/>     
+    <user name="testgrp"/>     
+    <arg name="dbname" value="db21628" />
+    <arg name="ndocs" value="200000" />
+    <arg name="nrevs" value="1" />
+    <arg name="interval" value="10" />
+    <arg name="workers" value="1" />
+    <arg name="folder" value="" />
+    <arg name="order" value="rand" />
+</load_test>
+</storage>
