@@ -1,6 +1,8 @@
 #/a/bin/python2.7
 
 from socket import error as SocketError
+import threading
+import hashlib
 
 def _get_payload(count,delay,rev):
     #count = 6
@@ -17,7 +19,7 @@ def _get_payload(count,delay,rev):
     elif count == 2:
         # fetch,del,del
         if delay: time.sleep(random.random()*6)
-        return "{\"_rev\":\"%s\",\"count\":%d,\"root\":\"275016\",\"vn_hash\":\"kCzTwvEwqQpoPRFFwlK4MJqkuW8\",\"aversion\":{\"id\":[1479518055.304166,\"AhAylw\"],\"type\":\"file\",\"size\":1091536,\"hash\":\"dfe0aa7992f95f2d4731ddeb65319780\",\"mtime\":1479518055,\"user_metadata\":{},\"user_metadata_ts\":1479518055.829717,\"ranges\":[{\"range\":[0,1091535],\"chunks\":[{\"id\":[1479518055.304166,\"AhAylw\"],\"status\":\"active\",\"sn\":[\"nsos\",[\"19269\",\"/stripe/19269.144.1372878600.8.2\"],\"content/275016/678/c99/2.kCzTwvEwqQpoPRFFwlK4MJqkuW8FQZ0kIAvmAhAylwVBnSQgC-YCEDKXAAAAAAAQp9Df4Kp5kvlfLUcx3etlMZeA1QBA\"]},{\"id\":[1479518070.897756,\"F0_2jQ\"],\"status\":\"active\",\"sn\":[\"nsos\",[\"19455\",\"/stripe/19455.283.1375200265.8.2\"],\"content/275016/ea5/3c3/2.kCzTwvEwqQpoPRFFwlK4MJqkuW8FQZ0kIAvmAhAylwVBnSUN_FwXT_aNAAAAAAAQp9Df4Kp5kvlfLUcx3etlMZeA6gBA\"]}],\"dcids\":[[1479518070.883097,\"F0_2mw\"]]}]},\"queue\":{\"fetch\":[[[\"nsds\",[\"19461\",\"0\",\"0\"],\"\"],0,1479517259.411536]],\"del\":[[[\"nsos\",[\"19455\",\"/stripe/19455.200.1375200265.8.2\"],\"content/275016/1c0/e0d/2.kCzTwvEwqQpoPRFFwlK4MJqkuW8FQZ0kIAvmAhAylwVBnSUNwxkXT_abAAAAAAAQp9Df4Kp5kvlfLUcx3etlMZeAogBA\"],0,1479518126.740001]],\"del\":[[[\"nsos\",[\"19455\",\"/stripe/19455.200.1375200265.8.2\"],\"content/275016/1c0/e0d/2.kCzTwvEwqQpoPRFFwlK4MJqkuW8FQZ0kIAvmAhAylwVBnSUNwxkXT_abAAAAAAAQp9Df4Kp5kvlfLUcx3etlMZeAogBA\"],0,1479518126.740001]]},\"ctime\":1479518067.042391}" % (rev, count)
+        return "{\"_rev\":\"%s\",\"count\":%d,\"root\":\"275016\",\"vn_hash\":\"kCzTwvEwqQpoPRFFwlK4MJqkuW8\",\"aversion\":{\"id\":[1479518055.304166,\"AhAylw\"],\"type\":\"file\",\"size\":1091536,\"hash\":\"dfe0aa7992f95f2d4731ddeb65319780\",\"mtime\":1479518055,\"user_metadata\":{},\"user_metadata_ts\":1479518055.829717,\"ranges\":[{\"range\":[0,1091535],\"chunks\":[{\"id\":[1479518055.304166,\"AhAylw\"],\"status\":\"active\",\"sn\":[\"nsos\",[\"19269\",\"/stripe/19269.144.1372878600.8.2\"],\"content/275016/678/c99/2.kCzTwvEwqQpoPRFFwlK4MJqkuW8FQZ0kIAvmAhAylwVBnSQgC-YCEDKXAAAAAAAQp9Df4Kp5kvlfLUcx3etlMZeA1QBA\"]},{\"id\":[1479518070.897756,\"F0_2jQ\"],\"status\":\"active\",\"sn\":[\"nsos\",[\"19455\",\"/stripe/19455.283.1375200265.8.2\"],\"content/275016/ea5/3c3/2.kCzTwvEwqQpoPRFFwlK4MJqkuW8FQZ0kIAvmAhAylwVBnSUN_FwXT_aNAAAAAAAQp9Df4Kp5kvlfLUcx3etlMZeA6gBA\"]}],\"dcids\":[[1479518070.883097,\"F0_2mw\"]]}]},\"queue\":{\"fetch\":[[[\"nsds\",[\"19461\",\"0\",\"0\"],\"\"],0,1479517259.411536]],\"del\":[[[\"nsos\",[\"19455\",\"/stripe/19455.200.1375200265.8.2\"],\"content/275016/1c0/e0d/2.kCzTwvEwqQpoPRFFwlK4MJqkuW8FQZ0kIAvmAhAylwVBnSUNwxkXT_abAAAAAAAQp9Df4Kp5kvlfLUcx3etlMZeAogBA\"],0,1479518126.740001],[[\"nsos\",[\"19455\",\"/stripe/19455.200.1375200265.8.2\"],\"content/275016/1c0/e0d/2.kCzTwvEwqQpoPRFFwlK4MJqkuW8FQZ0kIAvmAhAylwVBnSUNwxkXT_abAAAAAAAQp9Df4Kp5kvlfLUcx3etlMZeAogBA\"],0,1479518126.740001]]},\"ctime\":1479518067.042391}" % (rev, count)
 
     elif count == 3:
         # fetch,del
@@ -48,7 +50,15 @@ def _get_payload(count,delay,rev):
         else:
             return "{\"_rev\":\"%s\",\"count\":%d,\"root\":\"275016\",\"vn_hash\":\"kCzTwvEwqQpoPRFFwlK4MJqkuW8\",\"aversion\":\"1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890\",\"ctime\":1479518067.042391}" % (rev, count)
 
+dbsign = None
+lock = threading.Lock()
+
 def load_test_init(ip, args, **params):
+    global dbsign 
+    dbsign = subprocess.Popen(["/a/bin/dbsign", "--server"], stdout = subprocess.PIPE, stdin = subprocess.PIPE)
+    v = dbsign.stdout.readline()
+    assert(v == '- OK 1\n')
+
     state = CouchUtils.db_info(ip, args['upload'], **params)
     state['suffix'] = ''.join(chr(i) for i in state["shard_suffix"])
     state['shards'] = {}
@@ -81,7 +91,20 @@ def load_test_do_work(ip, doc, args, **params):
         if debug: print >>sys.stderr, "%d [%s] GET /%s/%s" % (time.time(), ip, params['dbname'],doc)
 
         try:
-            local['conn'].request("GET", "/%s/%s" %(params['dbname'],doc))
+            if args['upload'].has_key('dbsign') and args['upload']['dbsign']:
+                lock.acquire()
+                dbsign.stdin.write("%d signurl db_readonly GET - /%s/%s\n" % (local['counter'], params['dbname'], doc))
+                s = dbsign.stdout.readline()
+                lock.release()
+
+                hdnea = s.split()
+                assert(int(hdnea[0]) == local['counter'])
+                assert(hdnea[1] == 'OK')
+
+                local['conn'].request("GET", "/%s/%s" %(params['dbname'],doc), headers = {"EdgeAuth" : hdnea[2]})
+            else:
+                local['conn'].request("GET", "/%s/%s" %(params['dbname'],doc))
+
             resp = local['conn'].getresponse()
 
             out = ''
@@ -99,7 +122,27 @@ def load_test_do_work(ip, doc, args, **params):
                 rev= None
             
             if debug: print >>sys.stderr, "%d [%s] PUT /%s/%s?_rev=%s" % (time.time(), ip, params['dbname'],doc,rev)
-            local['conn'].request("PUT", "/%s/%s" %(params['dbname'],doc),  _get_payload(count,delay,rev))
+
+            payload = _get_payload(count,delay,rev)
+            if args['upload'].has_key('dbsign') and args['upload']['dbsign']:
+                hasher = hashlib.sha256()
+                hasher.update(payload)
+                payload_hash = hasher.hexdigest()
+
+                lock.acquire()
+                dbsign.stdin.write("%d signurl db_readwrite PUT %s /%s/%s\n" % (local['counter'], payload_hash, params['dbname'], doc))
+                s = dbsign.stdout.readline()
+                lock.release()
+
+                hdnea = s.split()
+                assert(int(hdnea[0]) == local['counter'])
+                assert(hdnea[1] == 'OK')
+
+                local['conn'].request("PUT", "/%s/%s" %(params['dbname'],doc), payload, {"EdgeAuth" : hdnea[2]})
+            else:
+                local['conn'].request("PUT", "/%s/%s" %(params['dbname'],doc),  payload)
+
+
             resp = local['conn'].getresponse()
             out = resp.read()
             if local['status'].has_key(resp.status):

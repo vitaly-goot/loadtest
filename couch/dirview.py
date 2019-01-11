@@ -37,6 +37,7 @@ def load_test_do_work(ip, doc, args, **params):
                 local['status'][resp.status] += 1
             else:   
                 local['status'][resp.status] = 1
+            if delay: time.sleep(random.random())
         except httplib.BadStatusLine:
             print >>sys.stderr, "%d [%s] BadStatusLine in GET /%s/_design/active/_view/%s?%s" % (time.time(), ip, params['dbname'],viewname,"&".join(options))
             #traceback.print_exc(file=sys.stderr)

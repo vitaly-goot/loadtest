@@ -1,29 +1,41 @@
 <storage>
-<load_test name="couch/upload.py" debug='0' postproc="lib/reduce.py"  config="conf/task_8110.json">
+<load_test name="couch/upload.py" debug='0' postproc="lib/reduce.py"  config="conf/task_1800.json">
     <shell command="ssh"/>     
     <user name="root"/>     
     <arg name="dbname" value="testdb" />
-    <arg name="ndocs" value="10000000" />
-    <arg name="nrevs" value="6" />
-    <arg name="interval" value="300" />
-    <arg name="workers" value="140" />
-    <arg name="folder" value="1000%2Fvgoot%2F2%2F" />
-    <arg name="order" value="rand" />
-    <!--
-    <arg name="shard_range" value="70000000-77ffffff" />
-    <arg name="shard_range" value="f8000000-ffffffff" />
-    <arg name="shard_range" value="28000000-2fffffff" />
-    -->
-</load_test>
-<load_test name="couch/download.py" debug='0' postproc="lib/reduce.py" config="conf/task_8110.json">
-    <shell command="ssh"/>     
-    <user name="root"/>     
-    <arg name="dbname" value="testdb" />
-    <arg name="ndocs" value="10000" />
+    <arg name="ndocs" value="30000" />
     <arg name="nrevs" value="1" />
     <arg name="interval" value="10" />
-    <arg name="workers" value="3" />
-    <arg name="folder" value="1000%2Fvgoot%2F2%2F" />
+    <arg name="workers" value="40" />
+    <arg name="folder" value="vgoot%2F1%2F" />
+    <arg name="order" value="rand" />
+    <!--
+    <arg name="shard_range" value="68000000-6fffffff" />
+    <arg name="shard_range" value="70000000-77ffffff" />
+    <arg name="shard_range" value="28000000-2fffffff" />
+    <arg name="shard_range" value="f8000000-ffffffff" />
+    -->
+</load_test>
+<load_test name="couch/bulk_docs.py" debug='0' postproc="lib/reduce.py" config="conf/task_1811.json_">
+    <shell command="ssh"/>     
+    <user name="root"/>     
+    <arg name="dbname" value="testdb" />
+    <arg name="ndocs" value="30" />
+    <arg name="nrevs" value="1" />
+    <arg name="interval" value="10" />
+    <arg name="workers" value="1" />
+    <arg name="folder" value="4000/vgoot/6/" />
+    <arg name="order" value="rand" />
+</load_test>
+<load_test name="couch/download.py" debug='0' postproc="lib/reduce.py" config="conf/task_1800.json">
+    <shell command="ssh"/>     
+    <user name="root"/>     
+    <arg name="dbname" value="testdb" />
+    <arg name="ndocs" value="30000" />
+    <arg name="nrevs" value="1" />
+    <arg name="interval" value="10" />
+    <arg name="workers" value="40" />
+    <arg name="folder" value="vgoot%2F1%2F" />
     <arg name="order" value="rand" />
 </load_test>
 <load_test name="couch/all_docs.py" debug='0' postproc="lib/reduce.py" config="conf/task_8110.json">
@@ -59,7 +71,7 @@
     <arg name="folder" value="1266/vgoot/57/01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678900123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789/" />
     <arg name="order" value="rand" />
 </load_test>
-<load_test name="couch/admin.py" debug='0' postproc="lib/reduce.py" config="conf/task_8110.json">
+<load_test name="couch/admin.py" debug='0' postproc="lib/reduce.py" config="conf/task_1800.json">
     <shell command="ssh"/>     
     <user name="root"/>     
     <arg name="dbname" value="testdb" />
@@ -79,6 +91,28 @@
     <arg name="interval" value="10" />
     <arg name="workers" value="1" />
     <arg name="folder" value="" />
+    <arg name="order" value="rand" />
+</load_test>
+<load_test name="cassandra/upload.py" debug='0' postproc="lib/reduce.py"  config="conf/task_1800.json">
+    <shell command="ssh"/>
+    <user name="root"/>
+    <arg name="dbname" value="testdb" />
+    <arg name="ndocs" value="100000" />
+    <arg name="nrevs" value="1" />
+    <arg name="interval" value="10" />
+    <arg name="workers" value="160" />
+    <arg name="folder" value="vgoot%2F1%2F" />
+    <arg name="order" value="rand" />
+</load_test>
+<load_test name="cassandra/download.py" debug='0' postproc="lib/reduce.py"  config="conf/task_1800.json">
+    <shell command="ssh"/>
+    <user name="root"/>
+    <arg name="dbname" value="testdb" />
+    <arg name="ndocs" value="100000" />
+    <arg name="nrevs" value="1" />
+    <arg name="interval" value="10" />
+    <arg name="workers" value="40" />
+    <arg name="folder" value="vgoot%2F1%2F" />
     <arg name="order" value="rand" />
 </load_test>
 </storage>

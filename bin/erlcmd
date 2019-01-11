@@ -61,7 +61,7 @@ COOKIE=`grep setcookie /a/edgedata/etc/vm.args  | awk '{print $2}'`
 if [ -z "$TARG" ]; then 
     TARG=`grep name /a/edgedata/etc/vm.args  | awk '{print $2}'`
 fi
-couch_version=`/usr/local/akamai/bin/dba_cfgparam --param use_couch_version 2>/dev/null` || exit 123
+couch_version=`/a/bin/cobra_svcvar -r $REGION nsds::use_couch_version`
 
 START="$START $TARG $proxy"
 
@@ -104,5 +104,5 @@ else
 
 fi
 
-$ERL ${EARGS[@]} $START
+$ERL ${EARGS[@]} -noshell -eval 'rpc:call(list_to_atom('\"$TARG\"'), os, cmd, ["/tmp/cmd"], 10000), init:stop().'
 

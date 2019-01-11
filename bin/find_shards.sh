@@ -6,7 +6,7 @@ DOC=$2
 REGION=`grep REGION /a/etc/akamai.conf | awk '{print $1}' | awk -F= '{print $2}'`
 NODE=`grep name /a/edgedata/etc/vm.args  | awk '{print $2}'`
 COOKIE=`grep setcookie /a/edgedata/etc/vm.args  | awk '{print $2}'`
-couch_version=`/a/bin/cobra_svcvar -r $REGION nsds::use_couch_version`
+couch_version=`/usr/local/akamai/bin/dba_cfgparam --param use_couch_version 2>/dev/null` || exit 123
 
 if [[ $couch_version == "2" ]]; then
 

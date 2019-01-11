@@ -44,6 +44,17 @@ class CouchUtils(object):
         return out, proc.returncode
 
     @staticmethod
+    def views_by_fsize(args, **params):
+        dbname = params['dbname']
+        suffix = args['suffix']
+        proc1 = subprocess.Popen(["du", "-a", "/ghostcache/edgedata/view/.shards/"], stdout=subprocess.PIPE, close_fds=True, shell=False)
+        proc2 = subprocess.Popen(["grep", "%s%s_design.*view$"%(dbname,suffix)], stdout=subprocess.PIPE, stdin=proc1.stdout, close_fds=True, shell=False)
+        proc3 = subprocess.Popen(["sort",  "-rn"], stdout=subprocess.PIPE, stdin=proc2.stdout, close_fds=True, shell=False)
+        proc4 = subprocess.Popen(["awk", "-F/", "{print $6}"], stdout=subprocess.PIPE, stdin=proc3.stdout, close_fds=True, shell=False)
+        out, _err = proc4.communicate()
+        return out.rstrip().split(os.linesep)
+
+    @staticmethod
     def shards_by_fsize(args, **params):
         dbname = params['dbname']
         suffix = args['suffix']
@@ -55,8 +66,14 @@ class CouchUtils(object):
         return out.rstrip().split(os.linesep)
 
     @staticmethod
+    def is_alive(ip, **params):
+        cmd = ["/a/bin/couchcurl", "-s", "%s:5050/"%ip]
+        out, _err  = CouchUtils.exec_cmd(ip, cmd, {'debug':False}, **params)            
+        return json.loads(out)
+
+    @staticmethod
     def db_info(ip, args, **params):
-        cmd = ["/a/bin/couchcurl", "-s", "%s:5986/dbs/%s"%(ip,params['dbname'])]
+        cmd = ["/a/bin/couchcurl", "-s", "%s:5986/%s/%s"%(ip,params['dbs'],params['dbname'])]
         out, _err  = CouchUtils.exec_cmd(ip, cmd, args, **params)            
         return json.loads(out)
 
@@ -340,7 +357,7 @@ class CouchCompaction(object):
         suffix = args['suffix']
         view = urllib.quote_plus(params['viewmap'][shard])
         cmd = ["/a/bin/couchcurl", "-X", "POST", "-H", "Content-Type: application/json", "-s", "--dbsign-role", "server_admin", 
-                "127.0.0.1:5986/shards%%2F%s%%2F%s%s/_compact/%s"%(
+                "127.0.0.1:5986/shards%%2F%s%%2F%s%s/_compact/%s?stickysuspend_indexer=true"%(
                 shard,dbname,suffix,view)]
         if params['debug']: print >>sys.stderr, cmd
         proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, close_fds=True, shell=False)

@@ -1,0 +1,144 @@
+{
+    "startup_delay":1,
+    "shutdown_delay":1,
+    "workers": {
+        "ips":
+        {
+          "198.18.44.80":"run",
+          "198.18.44.81":"run",
+          "198.18.44.83":"run",
+          "198.18.44.84":"run",
+          "198.18.44.85":"run",
+        },
+        "args" : 
+        {
+            "upload" : 
+            {
+                "heartbit":10000,
+                "delay":True,
+                "debug":False,
+                "dbsign":True,
+            },
+            "download" : 
+            {
+                "heartbit":10000,
+                "debug":False,
+            },
+            "all_docs" : 
+            {
+                "limit":100,
+                "include_docs":"true",
+                "heartbit":10000,
+                "debug":False,
+            },
+            "dirview" : 
+            {
+                "limit":100,
+                "group":"true",
+                "group_level":5,
+                "debug":False,
+            },
+            "mkdir" :
+            {
+                "debug":False,
+            },
+            "admin" :
+            {
+                "debug":False,
+            }
+        },
+    },
+    "monitors": [
+      {
+        "run_every":120,
+        "name":"pidstat",
+        "ips":
+          {
+            "198.18.44.80":True,
+            "198.18.44.81":True,
+          },  
+        "args" : 
+          {
+            "format":'csv',
+            "debug":False,
+          }    
+      },
+      {
+        "run_every":300,
+        "name":"_dirview",
+        "ips":
+          {
+          },  
+        "args" : 
+          {
+            "limit":100,
+            "group":"true",
+            "group_level":5,
+            "debug":False,
+          }    
+      },
+      {
+        "run_every":300,
+        "name":"active_tasks",
+        "ips":
+          {
+            "198.18.44.80":True,
+            "198.18.44.81":True,
+          },  
+        "args" : 
+          {
+            "debug":False,
+          }    
+      },
+      {
+        "run_every":300,
+        "name":"compaction",
+        "ips":
+          {
+          },  
+        "args" : 
+          {
+            "debug":False,
+          }    
+      },
+      {
+        "run_every":60,
+        "name":"shards",
+        "ips":
+          {
+          },  
+        "args" : 
+          {
+            "debug":False,
+            "format":'csv',
+            "data":True,
+            "view":True,
+          }    
+      }
+    ],
+    "execs": [
+      {
+        "start_delay": 1,
+        "name": "change_feed",
+        "ips":
+          {
+          },  
+        "args" : 
+          {
+            "report_progress": 10000,
+            "debug":False,
+          }
+      },
+      {
+        "start_delay": 3,
+        "name": "_compaction",
+        "ips":
+          {
+          },
+        "args" : 
+          {
+            "debug":False,
+          }
+      }
+    ]
+}

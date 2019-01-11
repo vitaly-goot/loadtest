@@ -1,0 +1,79 @@
+{
+    "shutdown_delay":5,
+    "workers": {
+        "ips":
+        {
+          "198.18.44.94":"run",
+          "198.18.44.95":"run",
+          "198.18.44.96":"run",
+          "198.18.44.97":"run",
+          "198.18.44.98":"run",
+          "198.18.44.99":"run",
+        },
+        "args" : 
+        {
+            "upload" : 
+            {
+                "heartbit":10000,
+                "delay":True,
+                "debug":False,
+                "dbsign":True,
+            },
+        },
+    },
+    "monitors": [
+      {
+        "run_every":.1,
+        "name":"dirview",
+        "ips":
+          {
+            "198.18.44.95":True,
+          },  
+        "args" : 
+          {
+            "debug":False,
+          }    
+      }
+    ],
+    "execs": [
+      {
+        "start_delay": 10,
+        "name": "_compaction",
+        "ips":
+          {
+          },  
+        "args" : 
+          {
+            "nshards":4,
+            "debug":False,
+          }
+      },
+      {
+        "start_delay": 6,
+        "name": "_purge",
+        "ips":
+          {
+          },  
+        "args" : 
+          {
+            "debug":False,
+            "root": 'test77_',
+            "batchsize":1000,
+            "nworkers":3,
+            "with_open_rev":True,
+          }
+      },
+      {
+        "start_delay": 3,
+        "name": "_all_docs",
+        "ips":
+          {
+          },  
+        "args" : 
+          {
+            "debug":False,
+            "root": 'test1_',
+          }
+      }
+    ]
+}

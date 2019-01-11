@@ -115,6 +115,7 @@ params = {
     'ndocs' : 100,
     'nrevs' : 1,
     'order' : 'rand',
+    'dbs'   : 'dbs',
     'local': local()
 }
 
@@ -201,6 +202,7 @@ else:
     for doc in docs:
         q.put(doc)
 
+
 def merge_two_dicts(x, y):
     '''Given two dicts, merge them into a new dict as a shallow copy.'''
     z = x.copy()
@@ -215,6 +217,12 @@ def myip():
 ip=myip()
 hits_report={}
 latency_report={}
+
+couch = CouchUtils.is_alive(ip, **params)
+if couch.has_key('version') and couch['version'] == '2.1.0':
+    params['dbs'] = '_dbs'
+
+print >> sys.stderr, "%d [%s] is alive '%s'" % (time.time(), ip, str(couch))
 
 def ctrl_c():
     return os.getppid() == 1

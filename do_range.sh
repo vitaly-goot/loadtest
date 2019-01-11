@@ -20,5 +20,5 @@ done
 for i in `seq $FROM $TO` 
 do
     echo $PREFIX.$i 
-    ssh -A root@$PREFIX.$i $COMMAND "${args[@]}"
+    ssh -o ConnectTimeout=4 -o BatchMode=yes -o StrictHostKeyChecking=no -A root@$PREFIX.$i $COMMAND "${args[@]}"
 done

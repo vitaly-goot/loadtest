@@ -1,0 +1,182 @@
+{
+    "startup_delay":1,
+    "shutdown_delay":1,
+    "workers": {
+        "ips":
+        {
+          "198.18.44.50":"run",
+          "198.18.44.51":"run",
+          "198.18.44.52":"run",
+          "198.18.44.53":"run",
+          "198.18.44.54":"run",
+          "198.18.44.155":"run",
+          "198.18.44.156":"run",
+          "198.18.44.157":"run",
+          "198.18.44.158":"run",
+          "198.18.44.159":"run",
+          "198.18.44.160":"run",
+          "198.18.44.161":"run",
+          "198.18.44.162":"run",
+          "198.18.44.163":"run",
+          "198.18.44.164":"run",
+          "198.18.44.165":"run",
+          "198.18.44.166":"run",
+          "198.18.44.167":"run",
+          "198.18.44.168":"run",
+          "198.18.44.169":"run",
+        },
+        "args" : 
+        {
+            "bulk_docs" : 
+            {
+                "heartbit":10000,
+                "debug":False,
+                "dbsign":False,
+                "size":10,
+            },
+            "upload" : 
+            {
+                "heartbit":10000,
+                "delay":True,
+                "debug":False,
+                "dbsign":True,
+            },
+            "download" : 
+            {
+                "heartbit":10000,
+                "debug":False,
+            },
+            "all_docs" : 
+            {
+                "limit":100,
+                "include_docs":"true",
+                "heartbit":10000,
+                "debug":False,
+            },
+            "dirview" : 
+            {
+                "limit":100,
+                "group":"true",
+                "group_level":5,
+                "debug":False,
+            },
+            "mkdir" :
+            {
+                "debug":False,
+            },
+            "admin" :
+            {
+                "debug":False,
+            }
+        },
+    },
+    "monitors": [
+      {
+        "run_every":120,
+        "name":"pidstat",
+        "ips":
+          {
+          },  
+        "args" : 
+          {
+            "format":'csv',
+            "debug":False,
+          }    
+      },
+      {
+        "run_every":300,
+        "name":"_dirview",
+        "ips":
+          {
+          },  
+        "args" : 
+          {
+            "limit":100,
+            "group":"true",
+            "group_level":5,
+            "debug":False,
+          }    
+      },
+      {
+        "run_every":300,
+        "name":"active_tasks",
+        "ips":
+          {
+          "198.18.44.50":True,
+          "198.18.44.51":True,
+          "198.18.44.52":True,
+          "198.18.44.53":True,
+          "198.18.44.54":True,
+          "198.18.44.155":True,
+          "198.18.44.156":True,
+          "198.18.44.157":True,
+          "198.18.44.158":True,
+          "198.18.44.159":True,
+          "198.18.44.160":True,
+          "198.18.44.161":True,
+          "198.18.44.162":True,
+          "198.18.44.163":True,
+          "198.18.44.164":True,
+          "198.18.44.165":True,
+          "198.18.44.166":True,
+          "198.18.44.167":True,
+          "198.18.44.168":True,
+          "198.18.44.169":True,
+          },  
+        "args" : 
+          {
+            "debug":False,
+          }    
+      },
+      {
+        "run_every":300,
+        "name":"compaction",
+        "ips":
+          {
+          },  
+        "args" : 
+          {
+            "debug":False,
+          }    
+      },
+      {
+        "run_every":60,
+        "name":"shards",
+        "ips":
+          {
+          },  
+        "args" : 
+          {
+            "debug":False,
+            "format":'csv',
+            "data":True,
+            "view":True,
+          }    
+      }
+    ],
+    "execs": [
+      {
+        "start_delay": 1,
+        "name": "change_feed",
+        "ips":
+          {
+          },  
+        "args" : 
+          {
+            "report_progress": 10000,
+            "debug":False,
+          }
+      },
+      {
+        "start_delay": 3,
+        "name": "_compaction",
+        "ips":
+          {
+          },
+        "args" : 
+          {
+            "debug":False,
+          }
+      }
+    ]
+}

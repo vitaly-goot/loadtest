@@ -1,7 +1,19 @@
 #/a/bin/python2.7
 from socket import error as SocketError
+import threading
+
+dbsign = None
+lock = threading.Lock()
+
+
+def load_test_init(ip, args, **params):
+    global dbsign 
+    dbsign = subprocess.Popen(["/a/bin/dbsign", "--server"], stdout = subprocess.PIPE, stdin = subprocess.PIPE)
+    v = dbsign.stdout.readline()
+    assert(v == '- OK 1\n')
 
 def load_test_do_work(ip, doc, args, **params):
+    global dbsign 
     debug = args['download']['debug']
 
     local = getattr(params['local'], 'local')
@@ -26,7 +38,21 @@ def load_test_do_work(ip, doc, args, **params):
         count = i+1
         if debug: print >>sys.stderr, "%d [%s] GET %d /%s/%s" % (time.time(), ip, port, params['dbname'],doc)
         try:
-            conn.request("GET", "/%s/%s" %(params['dbname'],doc))
+            
+            if args['download'].has_key('dbsign') and args['download']['dbsign']:
+                lock.acquire()
+                dbsign.stdin.write("%d signurl db_readonly GET - /%s/%s\n" % (local['counter'], params['dbname'], doc))
+                s = dbsign.stdout.readline()
+                lock.release()
+
+                hdnea = s.split()
+                assert(int(hdnea[0]) == local['counter'])
+                assert(hdnea[1] == 'OK')
+
+                conn.request("GET", "/%s/%s" %(params['dbname'],doc), headers = {"EdgeAuth" : hdnea[2]})
+            else:    
+                conn.request("GET", "/%s/%s" %(params['dbname'],doc))
+
             resp = conn.getresponse()
             if local['status'].has_key(resp.status):
                 local['status'][resp.status] += 1
